@@ -7,9 +7,9 @@ constexpr int width  = 800; // output image size
 constexpr int height = 800;
 
 const vec3 light_dir(1,1,1); // light source
-const vec3       eye(1,1,3); // camera position
+const vec3       eye(0,-10,5); // camera position
 const vec3    center(0,0,0); // camera direction
-const vec3        up(0,1,0); // camera up vector
+const vec3        up(0,-0.44721,0.89443); // camera up vector
 
 extern mat<4,4> ModelView; // "OpenGL" state matrices
 extern mat<4,4> Projection;
@@ -51,8 +51,9 @@ struct Shader : IShader {
         double spec = std::pow(std::max(r.z, 0.), 5+model.specular(uv)); // specular intensity, note that the camera lies on the z-axis (in ndc), therefore simple r.z
 
         TGAColor c = model.diffuse(uv);
-        for (int i=0; i<3; i++)
-            color[i] = std::min<int>(10 + c[i]*(diff + spec), 255); // (a bit of ambient light, diff + spec), clamp the result
+        //for (int i=0; i<3; i++)
+        //    color[i] = std::min<int>(10 + c[i]*(diff + spec), 255); // (a bit of ambient light, diff + spec), clamp the result
+        color = c;
 
         return false; // the pixel is not discarded
     }
@@ -80,7 +81,7 @@ int main(int argc, char** argv) {
             triangle(clip_vert, shader, framebuffer, zbuffer); // actual rasterization routine call
         }
     }
-    framebuffer.write_tga_file("framebuffer.tga"); // the vertical flip is moved inside the function
+    framebuffer.write_tga_file("framebuffer.tga", true, false); // the vertical flip is moved inside the function
     return 0;
 }
 
